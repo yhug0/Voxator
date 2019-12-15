@@ -1,0 +1,13 @@
+<UXML xmlns="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+   <VisualElement name="the-container">
+        <Label text="Voxel Size :"/>
+        <uie:FloatField class="voxel-size"/>
+        
+        <Label text="Max Number of voxel type :"/>
+        <uie:IntegerField class="max-number-of-type"/>
+        
+        <VisualElement class="rules-view" name="rules"/>
+
+        <Button class="add-rule" text="Add Rule"/>
+   </VisualElement>
+</UXML>

@@ -1,0 +1,14 @@
+<UXML xmlns="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+   <VisualElement class="rule" name="Rule">
+       
+       <Toggle class="Toggle" name="Transparent" text="Is Transparent"/>
+       <Toggle class="Toggle" name="FaceTransparent" text="Make face Transparent"/>
+       <Toggle class="Toggle" name="FaceOpaque" text="Make face Opaque"/>
+
+       <Label class="MinMaxInfo" text="min 0 max 100"/>
+       <MinMaxSlider class="MinMax" low-value="0" high-value="256" />
+
+       <uie:ObjectField class="object-field" objectType="Material" name="material" text="Material"/>
+   
+   </VisualElement>
+</UXML>
