@@ -1,32 +1,20 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
+using System;
 
 namespace Voxel
 {
-    [CreateAssetMenu(order = 0, fileName = "Settings", menuName = "Voxel Settings")]
+    [Serializable]
+    [CreateAssetMenu(order = 0, fileName = "VoxelSettings", menuName = "Voxel Settings")]
     public class Settings : ScriptableObject
     {
-        [System.Serializable]
-        public struct RenderRule 
-        {
-            public Material material;
-            public float Min;
-            public float Max;
-            public bool Transparent;
-            public bool NeighbourTransparentFaced;
-            public bool NeighbourOpaqueFaced;
-
-
-            public uint StartId{get{return (uint) Min;} set {Min = (float)value;}}
-            public uint LastId{get{return (uint) LastId;} set {Max = (float)value;}}
-        }
         private float Size = 0.1f;
 
-        public uint MaxTypeOfVoxel {get; set;} = 256;
-        
-        [SerializeField]
-        public RenderRule[] RenderRules {get; set;}
+        public uint MaxTypeOfVoxel  = 255;
+
+        public RenderRule[] RenderRules;
         public float SizeShared { get { return Size; } set { Size = value; } }
         public Vector3[] PrecalculatedVertices { get; private set; } = new Vector3[8];
         public readonly Vector3Int[] NeighboursCheckFaces =
@@ -70,7 +58,32 @@ namespace Voxel
             PrecalculatedVertices[6] = new Vector3(Size, Size, Size);
             PrecalculatedVertices[7] = new Vector3(Size, Size, 0f);
         }
+        public void AddRule()
+        {
+            var list = this.RenderRules != null ? new List<RenderRule>(this.RenderRules) : new List<RenderRule>();
+            var renderRule = new RenderRule
+            {
+                Min = this.RenderRules != null && this.RenderRules.Length != 0 ? list[list.Count - 1].Max : 0,
+                Max = this.MaxTypeOfVoxel,
+                NeighbourTransparentFaced = true,
+                RenctangleSize = 1,
+            };
+            list.Insert(list.Count, renderRule);
+            this.RenderRules = list.ToArray();
+        }
 
+    }
+    [Serializable]
+    public struct RenderRule
+    {
+        public Material material;
+        public float Min;
+        public float Max;
+        public bool Transparent;
+        public bool NeighbourTransparentFaced;
+        public bool NeighbourOpaqueFaced;
+        public uint RenctangleSize;
 
+        public uint NbOfRectByLine;
     }
 }

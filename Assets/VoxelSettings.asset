@@ -10,6 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d32d159942897b540b3458cbc9ecd581, type: 3}
-  m_Name: Settings
+  m_Name: VoxelSettings
   m_EditorClassIdentifier: 
-  materials: []
+  MaxTypeOfVoxel: 255
+  RenderRules: []

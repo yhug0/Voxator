@@ -23,7 +23,6 @@ public class VoxelSettingsEditorGui : Editor
     {
         VisualRoot.Clear();
         MasterTreeAsset.CloneTree(VisualRoot);
-
         Settings settings = target as Settings;
 
         VisualElement Rules = VisualRoot.Q(className: "rules-view");
@@ -32,21 +31,50 @@ public class VoxelSettingsEditorGui : Editor
 
         Button addButton = VisualRoot.Q<Button>(className: "add-rule");
 
-        addButton.RegisterCallback<MouseCaptureEvent>(evt =>{
-            AddRuleButton(settings);
+        addButton.RegisterCallback<MouseCaptureEvent>(evt =>
+        {
+            if (settings.RenderRules != null && settings.RenderRules.Length > 0
+                && settings.RenderRules[settings.RenderRules.Length - 1].Max >= settings.MaxTypeOfVoxel)
+                return;
+            settings.AddRule();
 
             float minimum = settings.RenderRules.Length > 1 ? settings.RenderRules[settings.RenderRules.Length - 2].Max + 1 : 0;
-            
+
             if (settings.RenderRules.Length > 1)
             {
                 Rules.Q(className: "rule", name: (settings.RenderRules.Length - 2).ToString()).Q<MinMaxSlider>(className: "MinMax").
                 highLimit = minimum - 1;
             }
             RuleUI(Rules, settings, settings.RenderRules.Length - 1, minimum);
-            
         });
+        VoxelFieldUi(VisualRoot, settings);
 
         return VisualRoot;
+    }
+
+    public void VoxelFieldUi(VisualElement view, Settings settings)
+    {
+        var voxSize = view.Q<FloatField>(className: "voxel-size");
+        var NbMaxOfVoxel = view.Q<IntegerField>(className: "max-number-of-type");
+
+        voxSize.value = settings.SizeShared;
+        NbMaxOfVoxel.value = (int)settings.MaxTypeOfVoxel;
+
+        NbMaxOfVoxel.RegisterCallback<ChangeEvent<int>>(evt =>
+        {
+            MinMaxSlider slider = null;
+
+            if (settings.RenderRules.Length > 0)
+                slider = view.Q(className: "rule", name: (settings.RenderRules.Length - 1).ToString()).Q<MinMaxSlider>(className: "MinMax");
+
+            if (evt.newValue < 0 || evt.newValue > 255 || (slider != null && evt.newValue < slider.maxValue))
+                return;
+
+            if (slider != null)
+                slider.highLimit = evt.newValue;
+
+            settings.MaxTypeOfVoxel = (uint)evt.newValue;
+        });
     }
     public void RuleUI(VisualElement view, Settings rules, int index, float min)
     {
@@ -62,10 +90,31 @@ public class VoxelSettingsEditorGui : Editor
         objfield.objectType = typeof(Material);
         objfield.value = rules.RenderRules[index].material;
 
-        objfield.RegisterCallback<ChangeEvent<Object>>(evt => {
+        objfield.RegisterCallback<ChangeEvent<Object>>(evt =>
+        {
             var element = evt.target as ObjectField;
-            string test = (evt.newValue as Material).name;
             rules.RenderRules[index].material = evt.newValue as Material;
+        });
+        RectFieldUI(ruleElement, rules, index);
+    }
+    public void RectFieldUI(VisualElement ruleElement, Settings rules, int index)
+    {
+        var rectSize = ruleElement.Q<IntegerField>(className: "rect-size");
+        var nbRectByLine = ruleElement.Q<IntegerField>(className: "nb-rect-by-line");
+
+        rectSize.value = (int)rules.RenderRules[index].RenctangleSize;
+        nbRectByLine.value = (int)rules.RenderRules[index].NbOfRectByLine;
+        rectSize.RegisterCallback<ChangeEvent<int>>(evt =>
+        {
+            if (evt.newValue < 0)
+                return;
+           rules.RenderRules[index].RenctangleSize = (uint)evt.newValue;
+        });
+        nbRectByLine.RegisterCallback<ChangeEvent<int>>(evt =>
+        {
+            if (evt.newValue < 0)
+                return;
+            rules.RenderRules[index].NbOfRectByLine = (uint)evt.newValue;
         });
     }
     public void MinMaxSliderUI(VisualElement ruleElement, Settings rules, int index, float min)
@@ -74,7 +123,7 @@ public class VoxelSettingsEditorGui : Editor
         slider.highLimit = index + 1 >= rules.RenderRules.Length ? rules.MaxTypeOfVoxel : rules.RenderRules[index + 1].Min - 1;
         slider.lowLimit = min;
         slider.maxValue = rules.RenderRules[index].Max;
-        slider.value= (new Vector2(rules.RenderRules[index].Min, rules.RenderRules[index].Max));
+        slider.value = (new Vector2(rules.RenderRules[index].Min, rules.RenderRules[index].Max));
 
         var info = ruleElement.Q<Label>(className: "MinMaxInfo");
 
@@ -98,7 +147,7 @@ public class VoxelSettingsEditorGui : Editor
                 lowLimit = rules.RenderRules[index].Max + 1;
             }
         });
-    } 
+    }
     public void TogglesUi(VisualElement ruleElement, Settings rules, int index)
     {
         ruleElement.Query<Toggle>(classes: "Toggle").ForEach(toggle =>
@@ -111,7 +160,7 @@ public class VoxelSettingsEditorGui : Editor
                     var tmpToggle = evt.target as Toggle;
                     if (tmpToggle.parent.name == "Rule")
                         return;
-                    rules.RenderRules[index].Transparent = evt.newValue;
+                   rules.RenderRules[index].Transparent = evt.newValue;
                 });
             }
             else if (toggle.name == "FaceTransparent")
@@ -122,7 +171,7 @@ public class VoxelSettingsEditorGui : Editor
                     var tmpToggle = evt.target as Toggle;
                     if (tmpToggle.parent.name == "Rule")
                         return;
-                    rules.RenderRules[index].NeighbourTransparentFaced = evt.newValue;
+                   rules.RenderRules[index].NeighbourTransparentFaced = evt.newValue;
                 });
             }
             else if (toggle.name == "FaceOpaque")
@@ -133,21 +182,9 @@ public class VoxelSettingsEditorGui : Editor
                     var tmpToggle = evt.target as Toggle;
                     if (tmpToggle.parent.name == "Rule")
                         return;
-                    rules.RenderRules[index].NeighbourOpaqueFaced = evt.newValue;
+                   rules.RenderRules[index].NeighbourOpaqueFaced = evt.newValue;
                 });
             }
         });
-    }
-    private void AddRuleButton(Settings settings)
-    {
-        var list = settings.RenderRules != null ? new List<Settings.RenderRule>(settings.RenderRules) : new List<Settings.RenderRule>();
-        var renderRule = new Settings.RenderRule
-        {
-            Min = settings.RenderRules != null && settings.RenderRules.Length != 0 ? list[list.Count - 1].Max : 0,
-            Max = settings.MaxTypeOfVoxel,
-            NeighbourTransparentFaced = true
-        };
-        list.Insert(list.Count, renderRule);
-        settings.RenderRules = list.ToArray();
     }
 }

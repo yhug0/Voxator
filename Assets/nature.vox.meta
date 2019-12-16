@@ -1,0 +1,13 @@
+fileFormatVersion: 2
+guid: fb37dc2f04bcd874d9e5d70ba48dfac2
+ScriptedImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 2
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+  script: {fileID: 11500000, guid: f67082239dedf784e9da9c12c8995e57, type: 3}
+  gameObject: {instanceID: 0}
+  fileName: nature
+  path: Assets/nature.vox
