@@ -1,0 +1,13 @@
+fileFormatVersion: 2
+guid: 5f5bc3ad07778b54bb9d657956c920a0
+ScriptedImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 2
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+  script: {fileID: 11500000, guid: f67082239dedf784e9da9c12c8995e57, type: 3}
+  gameObject: {instanceID: 0}
+  fileName: chr_sword2
+  path: Assets/chr_sword2.vox

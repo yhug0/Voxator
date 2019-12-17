@@ -5,6 +5,7 @@ using UnityEditor;
 using Voxel.VoxFile;
 using Voxel;
 using UnityEngine.Rendering;
+using Voxel.Tools;
 
 [ScriptedImporter(1, "vox")]
 
@@ -22,10 +23,11 @@ public class VoxImporter : ScriptedImporter
         path = ctx.assetPath;
         gameObject = new GameObject(fileName + "-prefab");
 
-        //var manager = gameObject.AddComponent<VoxelChunkManager>();
+        gameObject.AddComponent<MeshRenderer>();
+        var filter = gameObject.AddComponent<MeshFilter>();
         ctx.AddObjectToAsset(fileName + "VoxelPrefab", gameObject);
         var model = VoxelModelInit(file);
-        ctx.AddObjectToAsset(fileName+ "-VoxelModel", model);
+        ctx.AddObjectToAsset(fileName + "-VoxelModel", model);
         ctx.AddObjectToAsset(fileName + "texture", file.texturePalette, file.texturePalette);
 
         Material material = new Material(GetDefaulTexture());
@@ -37,12 +39,16 @@ public class VoxImporter : ScriptedImporter
         setting.RenderRules[0].material = material;
         ctx.AddObjectToAsset(fileName + "-VoxelSetting", setting);
 
+        saveMesh(gameObject, ctx, setting, model);
+
         /*manager.model = model;
         manager.setting = setting;
         manager.Childname = fileName+"_child";
         manager.CreateChunck();
         manager.AddCollision();*/
         //saveMesh(manager, ctx);
+        //MeshGenerator gernerator = new MeshGenerator(setting, data);
+
     }
 
 
@@ -50,16 +56,29 @@ public class VoxImporter : ScriptedImporter
     {
         return GraphicsSettings.renderPipelineAsset.defaultMaterial;
     }
-    /*void saveMesh(VoxelChunkManager manager, AssetImportContext ctx)
+    void saveMesh(GameObject gameObject, AssetImportContext ctx, Settings settings, VoxelModel model)
     {
-        for (int i = 0; i < manager.chunkList.gamobjectNb; i++)
-        {   
-            if ( manager.chunkList.RawGOList[i] == null)
-                continue;
-            var mesh = manager.chunkList.RawGOList[i].GetComponent<MeshFilter>().sharedMesh;
-            ctx.AddObjectToAsset(mesh.name, mesh);
-        }
-    }*/
+        var ChunkModels = model.SplitModelInChunkLModel(factor: 2);
+        int i = 0;
+        float size = 16 * settings.SizeShared;
+        for (int x = 0; x < ChunkModels.Item2.x; x++)
+            for (int y = 0; y < ChunkModels.Item2.y; y++)
+                for (int z = 0; z < ChunkModels.Item2.z; z++)
+                {
+                    if (ChunkModels.Item1[x, y, z].Only0)
+                        continue;
+                    var child = new GameObject(fileName + "_child_" + i);
+                    child.transform.parent = gameObject.transform;
+                    child.transform.position = new Vector3(x * size, y * size, z * size);
+                    var meshBulder = new MeshGenerator(settings, ChunkModels.Item1[x, y, z]);
+                    child.AddComponent<MeshRenderer>().material = settings.RenderRules[0].material;
+                    meshBulder.GenerateMesh(fileName + "_childMesh_" + i);
+                    child.AddComponent<MeshFilter>().mesh = meshBulder.mesh;
+                    ctx.AddObjectToAsset(fileName + "_childMesh_" + i, meshBulder.mesh);
+                    i++;
+
+                }
+    }
     string getName(AssetImportContext ctx)
     {
         var name = ctx.assetPath.Split('/');

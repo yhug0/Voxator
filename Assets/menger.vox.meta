@@ -1,0 +1,13 @@
+fileFormatVersion: 2
+guid: a6d4c323918424c4f86cc4dc923856d8
+ScriptedImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 2
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+  script: {fileID: 11500000, guid: f67082239dedf784e9da9c12c8995e57, type: 3}
+  gameObject: {instanceID: 0}
+  fileName: menger
+  path: Assets/menger.vox

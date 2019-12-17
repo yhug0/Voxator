@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
+using Voxel.Tools;
 
 namespace Voxel
 {
@@ -40,6 +41,38 @@ namespace Voxel
             XSize = size.x;
             YSize = size.y;
             ZSize = size.z;
+        }
+
+        public Tuple<Array3UshortOpt[,,], Vector3Int> SplitModelInChunkLModel(ushort factor)
+        {
+            int sizeChunk = 4 << factor;
+            var nbChunkModel = chunkModelNb((uint)sizeChunk);
+
+            var chunkModels = new Array3UshortOpt[nbChunkModel.x, nbChunkModel.y, nbChunkModel.z];
+            var checkCreated = new bool[nbChunkModel.x, nbChunkModel.y, nbChunkModel.z];
+            for (int x = 0; x < XSize; x++)
+                for (int y = 0; y < YSize; y++)
+                    for (int z = 0; z < ZSize; z++)
+                    {
+                        if (!checkCreated[x / sizeChunk, y / sizeChunk, z / sizeChunk])
+                        {
+                            chunkModels[x / sizeChunk, y / sizeChunk, z / sizeChunk] = new Array3UshortOpt(factor);
+                            checkCreated[x / sizeChunk, y / sizeChunk, z / sizeChunk] = true;
+                        }
+                        chunkModels[x / sizeChunk, y / sizeChunk, z / sizeChunk][(uint)(x % sizeChunk), (uint)(y % sizeChunk), (uint)(z % sizeChunk)] = this[x, y, z];
+                    }
+            return new Tuple<Array3UshortOpt[,,], Vector3Int>(chunkModels, nbChunkModel);
+        }
+
+        private int Round(float f)
+        {
+            return Mathf.FloorToInt(f) + (f % 0.1 > 0 ? 1 : 0);
+        }
+
+        private Vector3Int chunkModelNb(uint SizeOfChunk)
+        {
+            Vector3 dest = data != null ? new Vector3(XSize / SizeOfChunk, YSize / SizeOfChunk, ZSize / SizeOfChunk) : new Vector3(-1, -1, -1);
+            return new Vector3Int(Round(dest.x), Round(dest.y), Round(dest.z));
         }
     }
 }
