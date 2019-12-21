@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Voxel.Tools;
@@ -25,19 +26,19 @@ namespace Voxel
 
         public enum SurfaceAction
         {
-            NotRender,
             Render,
+            NotRender,
             RenderBasedOnNeighbourChunk
         }
 
-        public Array3UshortOpt[] NeighbourChunck { private get; set; } = new Array3UshortOpt[6]
+        public Tuple<SurfaceAction, Array3UshortOpt>[] NeighbourChunck { get; set; } = new Tuple<SurfaceAction, Array3UshortOpt>[6]
         {
-            default, // front
-            default, // back 
-            default, // top
-            default, // buttom
-            default, // right
-            default, // left
+            new Tuple<SurfaceAction, Array3UshortOpt>(SurfaceAction.Render, default), // front
+            new Tuple<SurfaceAction, Array3UshortOpt>(SurfaceAction.Render, default), // back 
+            new Tuple<SurfaceAction, Array3UshortOpt>(SurfaceAction.Render, default), // top
+            new Tuple<SurfaceAction, Array3UshortOpt>(SurfaceAction.Render, default), // buttom
+            new Tuple<SurfaceAction, Array3UshortOpt>(SurfaceAction.Render, default), // right
+            new Tuple<SurfaceAction, Array3UshortOpt>(SurfaceAction.Render, default), // left
         };
 
         public MeshGenerator(Settings setting, Array3UshortOpt data)
@@ -61,23 +62,42 @@ namespace Voxel
             mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
         }
 
-        bool ChekVoxel(uint x, uint y, uint z)
+        bool ChekVoxel(int x, int y, int z)
         {
-            if (x < 0 || x >= Data.Width || y < 0 || y >= Data.Width || z < 0 || z >= Data.Width || Data[x, y, z] < 1)
+            bool OtherChunk = true; 
+            if (
+            (x < 0 && (OtherChunk = ChekOtherChunk((Data.Width - 1), y, z, VoxelFaces.Right))) ||
+            (x >= Data.Width && (OtherChunk = ChekOtherChunk(0, y, z, VoxelFaces.Left))) ||
+            (y < 0  && (OtherChunk = ChekOtherChunk(x, (Data.YOffset - 1), z, VoxelFaces.Buttom))) ||
+            (y >= Data.Width && (OtherChunk = ChekOtherChunk(x, 0, z, VoxelFaces.Top))) ||
+            (z < 0  && (OtherChunk = ChekOtherChunk(x, y, (Data.ZOffset - 1), VoxelFaces.Back))) ||
+            (z >= Data.Width && (OtherChunk = ChekOtherChunk(x, y, 0, VoxelFaces.Front))) ||
+            (OtherChunk && Data[(uint)x, (uint)y, (uint)z] < 1))
                 return false;
+            return true;
+        }
+
+        bool ChekOtherChunk(int x, int y, int z, VoxelFaces face)
+        {
+            if (NeighbourChunck[(int)face].Item1 == SurfaceAction.RenderBasedOnNeighbourChunk &&
+                NeighbourChunck[(int)face].Item2[(uint)x, (uint)y, (uint)z] > 0)
+                {
+                    return false;
+                }
+
             return true;
         }
         void ApplyDataToMeshForOneVoxel(Vector3 position)
         {
 
-            if (!ChekVoxel((uint)position.x, (uint)position.y, (uint)position.z))
+            if (!ChekVoxel((int)position.x, (int)position.y, (int)position.z))
                 return;
 
             var SizedPosition = position * setting.SizeShared;
             for (int i = 0; i < 6; i++)
             {
                 var checkPos = setting.NeighboursCheckFaces[i];
-                if (ChekVoxel((uint)position.x + (uint)checkPos.x, (uint)position.y + (uint)checkPos.y, (uint)position.z + (uint)checkPos.z))
+                if (ChekVoxel((int)position.x + (int)checkPos.x, (int)position.y + (int)checkPos.y, (int)position.z + (int)checkPos.z))
                     continue;
 
                 Vertices.Add(setting.PrecalculatedVertices[setting.VerticesFacesIndex[i, 0]] + SizedPosition);

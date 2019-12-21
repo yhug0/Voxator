@@ -6,6 +6,8 @@ using Voxel.VoxFile;
 using Voxel;
 using UnityEngine.Rendering;
 using Voxel.Tools;
+using System;
+using static Voxel.MeshGenerator;
 
 [ScriptedImporter(1, "vox")]
 
@@ -40,15 +42,6 @@ public class VoxImporter : ScriptedImporter
         ctx.AddObjectToAsset(fileName + "-VoxelSetting", setting);
 
         saveMesh(gameObject, ctx, setting, model);
-
-        /*manager.model = model;
-        manager.setting = setting;
-        manager.Childname = fileName+"_child";
-        manager.CreateChunck();
-        manager.AddCollision();*/
-        //saveMesh(manager, ctx);
-        //MeshGenerator gernerator = new MeshGenerator(setting, data);
-
     }
 
 
@@ -67,12 +60,30 @@ public class VoxImporter : ScriptedImporter
                 {
                     if (ChunkModels.Item1[x, y, z].Only0)
                         continue;
+                    var meshBulder = new MeshGenerator(settings, ChunkModels.Item1[x, y, z]);
+                    meshBulder.NeighbourChunck = new Tuple<SurfaceAction, Array3UshortOpt>[6]
+                    {
+                        z + 1 <  ChunkModels.Item2.z ? new Tuple<SurfaceAction, Array3UshortOpt>(SurfaceAction.RenderBasedOnNeighbourChunk, ChunkModels.Item1[x, y, z + 1]) :
+                            new Tuple<SurfaceAction, Array3UshortOpt>(SurfaceAction.Render, default), // front
+                        z - 1 >= 0 ? new Tuple<SurfaceAction, Array3UshortOpt>(SurfaceAction.RenderBasedOnNeighbourChunk, ChunkModels.Item1[x, y, z - 1]) :
+                            new Tuple<SurfaceAction, Array3UshortOpt>(SurfaceAction.Render, default), // back 
+                        y + 1 <  ChunkModels.Item2.y ? new Tuple<SurfaceAction, Array3UshortOpt>(SurfaceAction.RenderBasedOnNeighbourChunk, ChunkModels.Item1[x, y + 1, z]) :
+                            new Tuple<SurfaceAction, Array3UshortOpt>(SurfaceAction.Render, default), // top
+                        y - 1 >= 0 ? new Tuple<SurfaceAction, Array3UshortOpt>(SurfaceAction.RenderBasedOnNeighbourChunk, ChunkModels.Item1[x, y - 1, z]) :
+                            new Tuple<SurfaceAction, Array3UshortOpt>(SurfaceAction.Render, default), // buttom
+                        x - 1 >= 0 ? new Tuple<SurfaceAction, Array3UshortOpt>(SurfaceAction.RenderBasedOnNeighbourChunk, ChunkModels.Item1[x - 1, y, z]) :
+                            new Tuple<SurfaceAction, Array3UshortOpt>(SurfaceAction.Render, default), // right
+                        x + 1 <  ChunkModels.Item2.x ? new Tuple<SurfaceAction, Array3UshortOpt>(SurfaceAction.RenderBasedOnNeighbourChunk, ChunkModels.Item1[x + 1, y, z]) :
+                            new Tuple<SurfaceAction, Array3UshortOpt>(SurfaceAction.Render, default), // left
+                    };
+                    
+                    meshBulder.GenerateMesh(fileName + "_childMesh_" + i);
+                    if (meshBulder.mesh.vertexCount == 0)
+                        continue;
                     var child = new GameObject(fileName + "_child_" + i);
                     child.transform.parent = gameObject.transform;
                     child.transform.position = new Vector3(x * size, y * size, z * size);
-                    var meshBulder = new MeshGenerator(settings, ChunkModels.Item1[x, y, z]);
                     child.AddComponent<MeshRenderer>().material = settings.RenderRules[0].material;
-                    meshBulder.GenerateMesh(fileName + "_childMesh_" + i);
                     child.AddComponent<MeshFilter>().mesh = meshBulder.mesh;
                     ctx.AddObjectToAsset(fileName + "_childMesh_" + i, meshBulder.mesh);
                     i++;

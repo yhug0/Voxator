@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 134a7bd3b50b6e1488cb717330dcfe75
+guid: c6395f77502c3024cacd2c5a4cc7cc35
 ScriptedImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -9,5 +9,5 @@ ScriptedImporter:
   assetBundleVariant: 
   script: {fileID: 11500000, guid: f67082239dedf784e9da9c12c8995e57, type: 3}
   gameObject: {instanceID: 0}
-  fileName: untitled
-  path: Assets/untitled.vox
+  fileName: monu10
+  path: Assets/Settings/monu10.vox
