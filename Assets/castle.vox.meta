@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: c6395f77502c3024cacd2c5a4cc7cc35
+guid: 164a2304cdc1d914d9bbea7609250652
 ScriptedImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -8,6 +8,9 @@ ScriptedImporter:
   assetBundleName: 
   assetBundleVariant: 
   script: {fileID: 11500000, guid: f67082239dedf784e9da9c12c8995e57, type: 3}
-  gameObject: {instanceID: 0}
-  fileName: monu10
-  path: Assets/Settings/monu10.vox
+  gameObject: {fileID: 3126314092788880930, guid: 164a2304cdc1d914d9bbea7609250652,
+    type: 3}
+  FactorSize: 2
+  ImportedSetting: {instanceID: 0}
+  ChunkOptimized: 1
+  GenerateCollider: 1

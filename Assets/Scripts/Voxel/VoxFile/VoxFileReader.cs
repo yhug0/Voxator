@@ -14,7 +14,7 @@ namespace Voxel.VoxFile
         public uint NumberOfModel { get; private set; } = 1;
         private uint offset = 0;
 
-        public Texture2D texturePalette = new Texture2D(256, 1);
+        public Texture2D texturePalette = new Texture2D(256 * 16, 16);
 
 
         public List<ushort[,,]> ModelList { get; private set; } = new List<ushort[,,]>();
@@ -123,7 +123,9 @@ namespace Voxel.VoxFile
                 byte b = data[(int)offset + 2 + i * 4];
                 byte a = data[(int)offset + 3 + i * 4];
                 Color32 color = new Color32(r, g, b, a);
-                texturePalette.SetPixel(i, 0, color);
+                for (int j = 0; j < 16; j++)
+                    for(int k = 0; k < 16; k++)
+                        texturePalette.SetPixel(i * 16 + j, k, color);
 
 
             }

@@ -99,19 +99,11 @@ namespace Voxel
                 var checkPos = setting.NeighboursCheckFaces[i];
                 if (ChekVoxel((int)position.x + (int)checkPos.x, (int)position.y + (int)checkPos.y, (int)position.z + (int)checkPos.z))
                     continue;
-
-                Vertices.Add(setting.PrecalculatedVertices[setting.VerticesFacesIndex[i, 0]] + SizedPosition);
-                Vertices.Add(setting.PrecalculatedVertices[setting.VerticesFacesIndex[i, 1]] + SizedPosition);
-                Vertices.Add(setting.PrecalculatedVertices[setting.VerticesFacesIndex[i, 2]] + SizedPosition);
-                Vertices.Add(setting.PrecalculatedVertices[setting.VerticesFacesIndex[i, 3]] + SizedPosition);
-                UVs.Add(new Vector2((setting.UvsRef[0].x + Data[(uint)position.x, (uint)position.y, (uint)position.z] - 1) / 256 + 0.5f / 256, setting.UvsRef[0].y + 0.5f));
-                UVs.Add(new Vector2((setting.UvsRef[1].x + Data[(uint)position.x, (uint)position.y, (uint)position.z] - 1) / 256 + 0.5f / 256, setting.UvsRef[1].y + 0.5f));
-                UVs.Add(new Vector2((setting.UvsRef[2].x + Data[(uint)position.x, (uint)position.y, (uint)position.z] - 1) / 256 + 0.5f / 256, setting.UvsRef[2].y + 0.5f));
-                UVs.Add(new Vector2((setting.UvsRef[3].x + Data[(uint)position.x, (uint)position.y, (uint)position.z] - 1) / 256 + 0.5f / 256, setting.UvsRef[3].y + 0.5f));
-                Triangles.Add(VertextCounter);
-                Triangles.Add(VertextCounter + 1);
-                Triangles.Add(VertextCounter + 2);
-                Triangles.Add(VertextCounter + 3);
+                for (int j = 0; j < 4; j++) {
+                    Vertices.Add(setting.PrecalculatedVertices[setting.VerticesFacesIndex[i, j]] + SizedPosition);
+                    UVs.Add(new Vector2((setting.UvsRef[j].x + Data[(uint)position.x, (uint)position.y, (uint)position.z] - 1) / 256 - 0.25f * 16, setting.UvsRef[j].y + 0.25f * 16));
+                    Triangles.Add(VertextCounter + j);
+                }
                 Triangles.Add(VertextCounter + 1);
                 Triangles.Add(VertextCounter);
 
