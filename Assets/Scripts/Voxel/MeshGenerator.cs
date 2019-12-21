@@ -68,9 +68,9 @@ namespace Voxel
             if (
             (x < 0 && (OtherChunk = ChekOtherChunk((Data.Width - 1), y, z, VoxelFaces.Right))) ||
             (x >= Data.Width && (OtherChunk = ChekOtherChunk(0, y, z, VoxelFaces.Left))) ||
-            (y < 0  && (OtherChunk = ChekOtherChunk(x, (Data.YOffset - 1), z, VoxelFaces.Buttom))) ||
+            (y < 0  && (OtherChunk = ChekOtherChunk(x, (Data.Width - 1), z, VoxelFaces.Buttom))) ||
             (y >= Data.Width && (OtherChunk = ChekOtherChunk(x, 0, z, VoxelFaces.Top))) ||
-            (z < 0  && (OtherChunk = ChekOtherChunk(x, y, (Data.ZOffset - 1), VoxelFaces.Back))) ||
+            (z < 0  && (OtherChunk = ChekOtherChunk(x, y, (Data.Width - 1), VoxelFaces.Back))) ||
             (z >= Data.Width && (OtherChunk = ChekOtherChunk(x, y, 0, VoxelFaces.Front))) ||
             (OtherChunk && Data[(uint)x, (uint)y, (uint)z] < 1))
                 return false;
@@ -79,6 +79,8 @@ namespace Voxel
 
         bool ChekOtherChunk(int x, int y, int z, VoxelFaces face)
         {
+            // if (face == VoxelFaces.Buttom)
+            //     return(true);
             if (NeighbourChunck[(int)face].Item1 == SurfaceAction.RenderBasedOnNeighbourChunk &&
                 NeighbourChunck[(int)face].Item2[(uint)x, (uint)y, (uint)z] > 0)
                 {

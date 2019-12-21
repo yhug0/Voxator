@@ -99,7 +99,6 @@ public class VoxImporter : ScriptedImporter
                     child.transform.position = new Vector3(x * size, y * size, z * size);
                     child.AddComponent<MeshRenderer>().material = settings.RenderRules[0].material;
                     child.AddComponent<MeshFilter>().mesh = meshBulder.mesh;
-
                     if (GenerateCollider)
                     {
                         var collideBuilder = new ColliderGenerator(child.transform, ChunkModels.Item1[x, y, z], settings);
