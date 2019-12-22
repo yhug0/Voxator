@@ -12,7 +12,7 @@ namespace Voxel
     {
         private float Size = 0.1f;
 
-        public uint MaxTypeOfVoxel  = 255;
+        public uint MaxTypeOfVoxel = 255;
 
         public RenderRule[] RenderRules;
         public float SizeShared { get { return Size; } set { Size = value; } }
@@ -70,6 +70,14 @@ namespace Voxel
             };
             list.Insert(list.Count, renderRule);
             this.RenderRules = list.ToArray();
+        }
+
+        public Material[] GetMaterials()
+        {
+            Material[] materials = new Material[RenderRules.Length];
+            for (int i = 0; i < RenderRules.Length; i++)
+                materials[i] = RenderRules[i].material;
+            return materials;
         }
 
     }

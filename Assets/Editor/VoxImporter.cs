@@ -97,7 +97,7 @@ public class VoxImporter : ScriptedImporter
                     var child = new GameObject(fileName + "_child_" + i);
                     child.transform.parent = gameObject.transform;
                     child.transform.position = new Vector3(x * size, y * size, z * size);
-                    child.AddComponent<MeshRenderer>().material = settings.RenderRules[0].material;
+                    child.AddComponent<MeshRenderer>().materials = settings.GetMaterials();
                     child.AddComponent<MeshFilter>().mesh = meshBulder.mesh;
                     if (GenerateCollider)
                     {
