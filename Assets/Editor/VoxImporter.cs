@@ -54,6 +54,7 @@ public class VoxImporter : ScriptedImporter
         ctx.AddObjectToAsset(fileName + "-VoxelModel", model);
         ctx.AddObjectToAsset(fileName + "texture", file.texturePalette, file.texturePalette);
         ctx.AddObjectToAsset(fileName + "-VoxelMaterial", material);
+        setting.name = fileName + "-VoxelSetting";
         if (ImportedSetting == null)
             ctx.AddObjectToAsset(fileName + "-VoxelSetting", setting);
     }
@@ -120,6 +121,7 @@ public class VoxImporter : ScriptedImporter
     VoxelModel VoxelModelInit(VoxFileReader file)
     {
         var model = ScriptableObject.CreateInstance<VoxelModel>();
+        model.name = fileName + "-VoxelModel";
         model.data = new ushort[file.ModelList[0].GetLength(0) * file.ModelList[0].GetLength(1) * file.ModelList[0].GetLength(2)];
         for (int x = 0; x < file.ModelList[0].GetLength(0); x++)
             for (int y = 0; y < file.ModelList[0].GetLength(1); y++)

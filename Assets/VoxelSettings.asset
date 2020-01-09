@@ -13,4 +13,20 @@ MonoBehaviour:
   m_Name: VoxelSettings
   m_EditorClassIdentifier: 
   MaxTypeOfVoxel: 255
-  RenderRules: []
+  RenderRules:
+  - material: {fileID: 2100000, guid: eccba3cddd20ed04ea508295b5895a8a, type: 2}
+    Min: 0
+    Max: 132.9487
+    Transparent: 0
+    NeighbourTransparentFaced: 1
+    NeighbourOpaqueFaced: 0
+    RenctangleSize: 1
+    NbOfRectByLine: 0
+  - material: {fileID: 2100000, guid: a8cf601a99cfc5c46af791c956708210, type: 2}
+    Min: 132.9487
+    Max: 255
+    Transparent: 0
+    NeighbourTransparentFaced: 1
+    NeighbourOpaqueFaced: 0
+    RenctangleSize: 1
+    NbOfRectByLine: 0

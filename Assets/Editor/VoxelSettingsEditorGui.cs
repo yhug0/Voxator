@@ -12,6 +12,7 @@ public class VoxelSettingsEditorGui : Editor
     VisualElement VisualRoot;
     VisualTreeAsset MasterTreeAsset;
     VisualTreeAsset RuleTreeAsset;
+    string modulePath;
 
     public void OnEnable()
     {
@@ -31,6 +32,8 @@ public class VoxelSettingsEditorGui : Editor
 
         Button addButton = VisualRoot.Q<Button>(className: "add-rule");
 
+        modulePath = AssetDatabase.GetAssetPath(target);
+
         addButton.RegisterCallback<MouseCaptureEvent>(evt =>
         {
             if (settings.RenderRules != null && settings.RenderRules.Length > 0
@@ -46,6 +49,7 @@ public class VoxelSettingsEditorGui : Editor
                 highLimit = minimum - 1;
             }
             RuleUI(Rules, settings, settings.RenderRules.Length - 1, minimum);
+            AssetDatabase.ForceReserializeAssets(new List<string>{modulePath});
         });
         VoxelFieldUi(VisualRoot, settings);
 
@@ -74,6 +78,7 @@ public class VoxelSettingsEditorGui : Editor
                 slider.highLimit = evt.newValue;
 
             settings.MaxTypeOfVoxel = (uint)evt.newValue;
+            AssetDatabase.ForceReserializeAssets(new List<string>{modulePath});
         });
     }
     public void RuleUI(VisualElement view, Settings rules, int index, float min)
@@ -94,6 +99,7 @@ public class VoxelSettingsEditorGui : Editor
         {
             var element = evt.target as ObjectField;
             rules.RenderRules[index].material = evt.newValue as Material;
+            AssetDatabase.ForceReserializeAssets(new List<string>{modulePath});
         });
         RectFieldUI(ruleElement, rules, index);
     }
@@ -108,13 +114,15 @@ public class VoxelSettingsEditorGui : Editor
         {
             if (evt.newValue < 0)
                 return;
-           rules.RenderRules[index].RenctangleSize = (uint)evt.newValue;
+            rules.RenderRules[index].RenctangleSize = (uint)evt.newValue;
+            AssetDatabase.ForceReserializeAssets(new List<string>{modulePath});
         });
         nbRectByLine.RegisterCallback<ChangeEvent<int>>(evt =>
         {
             if (evt.newValue < 0)
                 return;
             rules.RenderRules[index].NbOfRectByLine = (uint)evt.newValue;
+            AssetDatabase.ForceReserializeAssets(new List<string>{modulePath});
         });
     }
     public void MinMaxSliderUI(VisualElement ruleElement, Settings rules, int index, float min)
@@ -146,6 +154,7 @@ public class VoxelSettingsEditorGui : Editor
                 tmpSlider.parent.parent.Q(className: "rule", name: (index + 1).ToString()).Q<MinMaxSlider>(className: "MinMax").
                 lowLimit = rules.RenderRules[index].Max + 1;
             }
+            AssetDatabase.ForceReserializeAssets(new List<string>{modulePath});
         });
     }
     public void TogglesUi(VisualElement ruleElement, Settings rules, int index)
@@ -160,8 +169,9 @@ public class VoxelSettingsEditorGui : Editor
                     var tmpToggle = evt.target as Toggle;
                     if (tmpToggle.parent.name == "Rule")
                         return;
-                   rules.RenderRules[index].Transparent = evt.newValue;
-                });
+                    rules.RenderRules[index].Transparent = evt.newValue;
+                        });
+                    AssetDatabase.ForceReserializeAssets(new List<string>{modulePath});
             }
             else if (toggle.name == "FaceTransparent")
             {
@@ -171,8 +181,9 @@ public class VoxelSettingsEditorGui : Editor
                     var tmpToggle = evt.target as Toggle;
                     if (tmpToggle.parent.name == "Rule")
                         return;
-                   rules.RenderRules[index].NeighbourTransparentFaced = evt.newValue;
-                });
+                    rules.RenderRules[index].NeighbourTransparentFaced = evt.newValue;
+                        });
+                    AssetDatabase.ForceReserializeAssets(new List<string>{modulePath});
             }
             else if (toggle.name == "FaceOpaque")
             {
@@ -182,8 +193,9 @@ public class VoxelSettingsEditorGui : Editor
                     var tmpToggle = evt.target as Toggle;
                     if (tmpToggle.parent.name == "Rule")
                         return;
-                   rules.RenderRules[index].NeighbourOpaqueFaced = evt.newValue;
-                });
+                    rules.RenderRules[index].NeighbourOpaqueFaced = evt.newValue;
+                        });
+                    AssetDatabase.ForceReserializeAssets(new List<string>{modulePath});
             }
         });
     }

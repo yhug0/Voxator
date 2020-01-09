@@ -13,4 +13,4 @@ ScriptedImporter:
   FactorSize: 2
   ImportedSetting: {instanceID: 0}
   ChunkOptimized: 1
-  GenerateCollider: 0
+  GenerateCollider: 1
