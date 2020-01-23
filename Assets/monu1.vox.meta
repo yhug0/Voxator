@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 3a93412d6de4a1e43845206f950381d7
+guid: 0f42111454eef88458f41f3a935c9696
 ScriptedImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -8,9 +8,9 @@ ScriptedImporter:
   assetBundleName: 
   assetBundleVariant: 
   script: {fileID: 11500000, guid: f67082239dedf784e9da9c12c8995e57, type: 3}
-  gameObject: {fileID: 3071310879981114322, guid: 3a93412d6de4a1e43845206f950381d7,
+  gameObject: {fileID: -720872678572570017, guid: 0f42111454eef88458f41f3a935c9696,
     type: 3}
   FactorSize: 2
-  ImportedSetting: {instanceID: 0}
+  ImportedSetting: {fileID: 11400000, guid: 9818e0ae124b5c2458baa38d3d14a9c2, type: 2}
   ChunkOptimized: 1
-  GenerateCollider: 1
+  GenerateCollider: 0

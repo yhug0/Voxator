@@ -16,14 +16,14 @@ MonoBehaviour:
   RenderRules:
   - material: {fileID: 2100000, guid: eccba3cddd20ed04ea508295b5895a8a, type: 2}
     Min: 0
-    Max: 132.9487
-    Transparent: 0
-    NeighbourTransparentFaced: 1
-    NeighbourOpaqueFaced: 0
+    Max: 46.725147
+    Transparent: 1
+    NeighbourTransparentFaced: 0
+    NeighbourOpaqueFaced: 1
     RenctangleSize: 1
     NbOfRectByLine: 0
   - material: {fileID: 2100000, guid: a8cf601a99cfc5c46af791c956708210, type: 2}
-    Min: 132.9487
+    Min: 47.725147
     Max: 255
     Transparent: 0
     NeighbourTransparentFaced: 1

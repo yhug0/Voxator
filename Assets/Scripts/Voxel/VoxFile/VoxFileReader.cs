@@ -105,12 +105,18 @@ namespace Voxel.VoxFile
             int voxelNum = System.BitConverter.ToInt32(data, (int)offset);
             offset += 4;
             for (int i = 0; i < voxelNum; i++)
-            {
+            { 
                 int x = data[(int)offset + i * 4];
                 int z = data[(int)offset + 1 + i * 4];
-                int y = data[(int)offset + 2 + i * 4];
-                ModelList[(int)ModeliNdex][ModelList[(int)ModeliNdex].GetLength(2) - 1 - x, y, ModelList[(int)ModeliNdex].GetLength(2) - 1 - z] = data[(int)offset + 3 + i * 4];
+                int y = data[(int)offset + 2 + i * 4];  
+                try {
+                ModelList[(int)ModeliNdex][ModelList[(int)ModeliNdex].GetLength(0) - 1 - x, y, ModelList[(int)ModeliNdex].GetLength(2) - 1 - z] = data[(int)offset + 3 + i * 4];
+                } catch (System.Exception) {
+                    Debug.Log(x + " " + y + " " + z);
+                    Debug.Log((ModelList[(int)ModeliNdex].GetLength(0) - 1 - x) + " " + y + " " + (ModelList[(int)ModeliNdex].GetLength(2) - 1 - z));
+                }
             }
+            ModeliNdex++;
             offset -= 4;
         }
 
